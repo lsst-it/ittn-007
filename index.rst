@@ -4,11 +4,8 @@
 
 .. sectnum::
 
-Cerro Pachon IT Infrastructure Monitoring
-=========================================
-
 Introduction
-------------
+============
 
 This document describes monitoring for the IT infrastructure at Cerro Pachon,
 reviews monitoring components and deployment mechanisms for managing monitoring
@@ -17,7 +14,7 @@ potential software and deployment options, and makes recommendations for a new
 monitoring implementation.
 
 Motivation
-----------
+==========
 
 At the time that this document is being written the Cerro Pachon IT
 infrastructure is not being actively maintained. Monitoring services have been
