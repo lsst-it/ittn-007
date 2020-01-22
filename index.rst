@@ -321,8 +321,18 @@ Systems used:
 - Grafana (dashboards, visualization, alert generation)
 - Slack (user alerting)
 
-Metrics based monitoring and alerting is used to provide insight into the summit
-environmental and facility conditions.
+Summary
+^^^^^^^
+
+IT uses Telegraf, InfluxDB, and Grafana to collect, store, display, and alert on
+metrics. Metrics based monitoring and alerting is used to provide insight into
+the summit environmental and facility conditions.
+
+Use cases
+^^^^^^^^^
+
+IT mainly uses metrics monitoring to generate alerts for a few critical systems.
+General monitoring of system health and availability is otherwise limited.
 
 The first use case, power monitoring, is used to monitor the summit electrical
 infrastructure, including UPSes for the main observatory and the AuxTel. The
@@ -336,12 +346,6 @@ and UPS charge depletion. Input power, output power, UPS charge level, and
 other metrics are exported from the UPSes via SNMP, collected via Telegraf,
 stored in InfluxDB, and turned into alerts by Grafana. These alerts are sent to
 Slack where users can be notified of outages and issues.
-
-This system is relatively successful and is in production, but suffers from
-reliability issues. False positives are not uncommon and alerts are not well
-targeted, relying all users to monitor a Slack channel for issues. In addition
-alerts do not differentiate between issues with the monitoring itself and actual
-power outages, which degrades the ratio of actionable alerts to noise.
 
 The second use case, server room temperature monitoring, is used to monitor for
 server room HVAC outages and HVAC overload. Cooling failures have caused server
@@ -357,11 +361,16 @@ using computer room equipment temperatures. Ambient temperature is exported by
 SNMP from a server room switch, scraped by Telegraf, stored in InfluxDB, alerted
 on by Grafana, and reported to Slack.
 
-The behavior and success of this system shares the same strengths and weaknesses
-of the summit power monitoring. The system is in production and is working, but
-suffers from a relatively low level of actionable alerts. In addition rising
-temperatures have caused the alert threshold to be repeatedly raised, which is
-highly suggestive of alert fatigue.
+Efficacy
+^^^^^^^^
+
+This system is relatively successful and is in production, but suffers from
+reliability issues. False positives are not uncommon and alerts are not well
+targeted, relying all users to monitor a Slack channel for issues. Alerts do not
+differentiate between issues with the monitoring itself and actual power
+outages, which degrades the ratio of actionable alerts to noise. Rising server
+room temperatures have caused the alert threshold to be repeatedly raised, which
+is highly suggestive of alert fatigue.
 
 The biggest problem with this implementation is that it's largely hand-rolled
 and deployed. The lack of automation makes the system opaque and brittle; small
