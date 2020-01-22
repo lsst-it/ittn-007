@@ -289,3 +289,64 @@ The deployment system should not require extensive knowledge in order to
 upgrade applications, maintain services, debug issues, and perform other common
 maintenance tasks. Common tasks shall be documented, and the overall deployment
 infrastructure shall be built with simplicity, reliability, and clarity in mind.
+
+Appendix A: Existing IT use cases
+=================================
+
+Metric based monitoring/alerting
+--------------------------------
+
+Systems used:
+
+- Telegraf (SNMP metrics collection)
+- InfluxDB (metrics storage/querying)
+- Grafana (dashboards, visualization, alert generation)
+- Slack (user alerting)
+
+Metrics based monitoring and alerting is used to provide insight into the summit
+environmental and facility conditions.
+
+The first use case, power monitoring, is used to monitor the summit electrical
+infrastructure, including UPSes for the main observatory and the AuxTel. The
+motivation for building this functionality was a combination of frequent power
+mains outages, slow backup generator start time, and limited UPS charge causing
+site power blackouts.
+
+The IT monitoring stack is being used to track the state of the power systems
+and generate alerts to IT and LSST electrical engineering in case of power loss
+and UPS charge depletion. Input power, output power, UPS charge level, and
+other metrics are exported from the UPSes via SNMP, collected via Telegraf,
+stored in InfluxDB, and turned into alerts by Grafana. These alerts are sent to
+Slack where users can be notified of outages and issues.
+
+This system is relatively successful and is in production, but suffers from
+reliability issues. False positives are not uncommon and alerts are not well
+targeted, relying all users to monitor a Slack channel for issues. In addition
+alerts do not differentiate between issues with the monitoring itself and actual
+power outages, which degrades the ratio of actionable alerts to noise.
+
+The second use case, server room temperature monitoring, is used to monitor for
+server room HVAC outages and HVAC overload. Cooling failures have caused server
+room temperatures to approach hazardous levels. One cause of overheating is
+power outages disabling HVAC while servers run on battery backups, maintaining
+heat generation while cooling is unavailable. The other cause of overheating is
+misconfigured HVAC routing and sensing, causing cooled air to bypass servers
+while keeping HVAC sensors cooled, thereby reducing the amount of cooling HVAC
+provides.
+
+In a similar manner to power monitoring, server room conditions are tracked by
+using computer room equipment temperatures. Ambient temperature is exported by
+SNMP from a server room switch, scraped by Telegraf, stored in InfluxDB, alerted
+on by Grafana, and reported to Slack.
+
+The behavior and success of this system shares the same strengths and weaknesses
+of the summit power monitoring. The system is in production and is working, but
+suffers from a relatively low level of actionable alerts. In addition rising
+temperatures have caused the alert threshold to be repeatedly raised, which is
+highly suggestive of alert fatigue.
+
+The biggest problem with this implementation is that it's largely hand-rolled
+and deployed. The lack of automation makes the system opaque and brittle; small
+changes to unrelated systems have caused monitoring outages. Instead of
+continuously improving this monitoring, it's largely ignored and defects are
+left unaddressed.
