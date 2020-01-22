@@ -293,6 +293,24 @@ infrastructure shall be built with simplicity, reliability, and clarity in mind.
 Appendix A: Existing IT use cases
 =================================
 
+Overview
+--------
+
+IT relies on the following monitoring systems.
+
+- Metrics collection: Telegraf
+- Metrics storage/querying: InfluxDB
+- Metrics visualization: Grafana
+- Metrics alerting: Grafana
+- Log aggregation: Graylog
+- Log alerting: Graylog
+- User notifications: Slack, JIRA
+
+Configuration, such as installed plugins, alerts, dashboards, streams, etc. have
+been manually configured and are stored as application state within Grafana and
+Graylog. Puppet is used to provision the services themselves but this
+configuration is limited.
+
 Metric based monitoring/alerting
 --------------------------------
 
