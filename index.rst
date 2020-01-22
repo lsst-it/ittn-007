@@ -377,3 +377,58 @@ and deployed. The lack of automation makes the system opaque and brittle; small
 changes to unrelated systems have caused monitoring outages. Instead of
 continuously improving this monitoring, it's largely ignored and defects are
 left unaddressed.
+
+Log based alerting
+------------------
+
+Systems used:
+
+- Cisco switch log export
+- Graylog (log aggregation, storage, querying, alerting)
+- Slack (user alerting)
+- JIRA (user alerting and issue tracking)
+
+Summary
+^^^^^^^
+
+IT uses Graylog for central log aggregation, alerting, and limited ad hoc querying.
+
+Use cases
+^^^^^^^^^
+
+The first use case of centralized logging is for detecting equipment improperly
+connected to network equipment. Network routers and switches forward logs to
+Graylog, where an alert is configured to look for port violations. When such an
+alert is detected an alert is sent to Slack and a JIRA issue is filed to track
+and resolve the issue.
+
+A second use case for centralized logging and querying is for locating hosts
+that have been infected with malware. DNS monitoring and filtering is provided
+by Cisco Umbrella, which monitors for DNS queries for known malicious domains.
+Cisco Umbrella generates reports about these blocked queries but reports the IP
+addresses of caching DNS resolvers forwarding queries. However logs are
+forwarded from the DNS and DHCP servers, so a malicious query can be traced
+through the resolver logs to an IP address, and IP addresses can be looked up to
+identify the host holding the lease at the time of the query.
+
+Ad hoc queries are also performed within Graylog, but it does not appear that
+this is commonly used. Use cases such as locating hosts using DHCP do come up
+but Graylog is not a core part of many workflows.
+
+Efficacy
+^^^^^^^^
+
+For simple alerting and forensics, Graylog has proved sufficient.
+
+As mentioned above, Graylog is largely configured by hand and the entire set of
+configuration needed to make the system run is not well understood.
+
+Port violations are sent to Slack with a fairly high frequency; it is not clear
+how many of these are actionable or if JIRA tickets are the primary point of
+interaction with alerts.
+
+Graylog has suffered from outages triggered by disk usage. Log retention
+policies did not regularly expire old information; this issue was exacerbated by
+Graylog and Elasticsearch being installed on the same system. Outages have been
+resolved by expanding the root filesystem or shifting the Elasticsearch storage
+location, but these are not solutions built for the long run.
