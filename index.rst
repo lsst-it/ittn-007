@@ -271,7 +271,7 @@ provisioning new systems, rolling forward and verifying functionality, and
 rolling back to previous infrastructure in case of error.
 
 In-place upgrades should be avoided; new systems should be provisioned so that
-uprade failures can be resolved by rolling back to an already functioning
+upgrade failures can be resolved by rolling back to an already functioning
 service.
 
 Service isolation
