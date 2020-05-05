@@ -7,26 +7,7 @@
 Introduction
 ============
 
-This document describes monitoring for the IT infrastructure at Cerro Pachon,
-reviews monitoring components and deployment mechanisms for managing monitoring
-services, enumerates monitoring and deployment requirements, discusses
-potential software and deployment options, and makes recommendations for a new
-monitoring implementation.
-
-Motivation
-==========
-
-At the time that this document is being written the Cerro Pachon IT
-infrastructure is not being actively maintained. Monitoring services have been
-manually configured and rolling out small changes have had unexpected impacts,
-making further maintenance difficult and risky. These services have had less
-than desired availability and have failed unexpectedly. In spite of these
-issues these services are in production and thus cannot tolerate outages, which
-further increases the challenge of maintaining the existing infrastructure.
-
-The unknown configuration of these services, high risk associated with
-maintenance, lack of reliability, and production status of the present
-infrastructure drive the need for a replacement monitoring implementation.
+This document describes monitoring for the IT deployments at Cerro Pachon and La Serena.
 
 Infrastructure overview
 =======================
@@ -101,42 +82,6 @@ Prometheus Alertmanager.
 
 Examples of black box alerting include Icinga.
 
-Deployment system
------------------
-
-The deployment system is the mechanism that deploys, upgrades, manages, and
-maintains the monitoring services.
-
-It is assumed that host provisioning is implemented by an outside service and
-that the monitoring deployment system will operate on systems accessible via
-SSH or another management protocol.
-
-The deployment service is responsible for the following functions.
-
-Service installation and upgrades
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The deployment service is responsible for installing and upgrading the
-monitoring software.
-
-Installation and upgrading can be done with system packages such as RPMs, or by
-fetching and launching containerized applications.
-
-Service management
-^^^^^^^^^^^^^^^^^^
-
-The deployment service ensures that all services are up and running. In case
-the underlying infrastructure is rebooted the deployment system will start the
-appropriate services. If monitoring systems crash the deployment system will
-restart services as needed.
-
-Service maintenance
-^^^^^^^^^^^^^^^^^^^
-
-The deployment service is responsible for running regular system maintenance.
-This includes tasks like cleaning up and compacting databases, or pruning stale
-information.
-
 Requirements
 ============
 
@@ -209,61 +154,6 @@ programmatic interface for generating visualizations.
 
 The metrics visualization console must support LDAP authentication. The metrics
 visualization may support access control but access control is not required.
-
-Deployment requirements
------------------------
-
-The deployment system operating and managing monitoring services has the
-following requirements.
-
-Automated/Idempotent
-^^^^^^^^^^^^^^^^^^^^
-
-The deployment system must be an automated system that can provision systems
-from the ground up. Manual configuration must be kept to an absolute minimum if
-tolerated at all, and must be limited to trivial initialization steps that are
-easy to document and reproduce. The automation system shall be the entry point
-for operating the monitoring systems.
-
-Immutable deployment
-^^^^^^^^^^^^^^^^^^^^
-
-The deployment system must deploy immutable infrastructure that is
-provisioned once and minimally modified once in production. The deployment
-system should discourage (if not outright forbid) manual configuration.
-
-Some mutability is required - databases are inherently stateful and not all
-services can be fully configured through automation, but state mutation after
-initial provisioning shall be treated as a bug, not a requirement of operating
-the system.
-
-Atomic upgrades/rollbacks
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Services should support atomic upgrades and rollbacks to ensure that
-availability requirements can be met. Upgrades should be performed by
-provisioning new systems, rolling forward and verifying functionality, and
-rolling back to previous infrastructure in case of error.
-
-In-place upgrades should be avoided; new systems should be provisioned so that
-upgrade failures can be resolved by rolling back to an already functioning
-service.
-
-Service isolation
-^^^^^^^^^^^^^^^^^
-
-All monitoring services must run independently. Databases and other supporting
-services must run in separate execution environments (containers or hosts) so
-that independent components can be maintained or replaced without impacting
-their dependent services.
-
-Approachable
-^^^^^^^^^^^^
-
-The deployment system should not require extensive knowledge in order to
-upgrade applications, maintain services, debug issues, and perform other common
-maintenance tasks. Common tasks shall be documented, and the overall deployment
-infrastructure shall be built with simplicity, reliability, and clarity in mind.
 
 Appendix A: Existing IT use cases
 =================================

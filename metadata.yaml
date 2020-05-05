@@ -37,7 +37,7 @@ authors:
 copyright: "2020, Association of Universities for Research in Astronomy, Inc. (AURA)"
 
 # Description. A short, 1-2 sentence statemement used by document indices.
-description: "This document describes monitoring for the IT infrastructure at Cerro Pachon, reviews monitoring components and deployment mechanisms for managing monitoring services, enumerates monitoring and deployment requirements, discusses potential software and deployment options, and makes recommendations for a new monitoring implementation."
+description: "This document describes monitoring for the IT deployments at Cerro Pachon and La Serena."
 
 # Abstract, if available
 # abstract: >
