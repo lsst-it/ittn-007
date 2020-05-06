@@ -9,7 +9,118 @@ Introduction
 
 This document describes monitoring for the IT deployments at Cerro Pachon and La Serena.
 
-Infrastructure overview
+Goal
+====
+
+The goal of the IT monitoring system is to provide an interface into the state
+of the IT deployment, provide tools to inspect and reason the state, and
+generate notifications when the system is an undesired state.
+
+Implementation
+==============
+
+Overview
+--------
+
+The monitoring implementation has four main concerns:
+
+- Metrics collection
+- Metrics storage and querying
+- Dashboarding and visualization
+- Alerting
+
+Metrics collection
+------------------
+
+Metrics are collected from a range of sources by Telegraf. Metrics are
+collected from three main sources:
+
+- System and application metrics
+- Availability/liveness metrics
+- Metrics relayed from an external system
+
+Host-based metrics
+^^^^^^^^^^^^^^^^^^
+
+Telegraf instances are deployed on all Puppet managed hosts, and collect system
+and application metrics. Standard system metrics are collected, such as CPU
+use, memory free, disk I/O, and so forth. In additional application metrics can
+be collected from sources such as Kubernetes, Docker, Kafka, et cetera.
+
+Availability metrics
+^^^^^^^^^^^^^^^^^^^^
+
+Metrics tracking system availability (e.g. ping, SSH, HTTP) must be run
+independently of hosts being monitored so that alerts can be generated when
+hosts or services become unreachable.  This functionality is provided by
+standalone Telegraf instances deployed on Kubernetes. Each check runs in a
+separate telegraf deployment.
+
+Telegraf automatically monitors hosts as they are added to and removed from
+Foreman by way of the Foreman Telegraf Configurer (ftc_). Ftc works by querying
+Foreman for a list of all hosts, generates Telegraf configurations to monitor a
+given service (DNS records, ping, etc), and updates the Telegraf deployments
+and configmaps in Kubernetes.
+
+.. _ftc: https://github.com/lsst-it/ftc
+
+Relaying metrics
+^^^^^^^^^^^^^^^^
+
+Additional Telegraf instances may be deployed within Kubernetes to monitor
+services that cannot directly run Telegraf. Examples include devices that
+expose metrics via SNMP, such as the summit generator, switches and routers,
+and other embedded devices.
+
+Metrics storage
+---------------
+
+InfluxDB is the core of the monitoring system, and provides a central point for
+metrics storage, retrieval, and querying.
+
+InfluxDB 2
+^^^^^^^^^^
+
+InfluxDB 2.0 is currently in beta, and when released will necessitate a partial
+overhaul of the IT monitoring implementation. InfluxDB 2.0 includes a new query
+language, Flux, and provides both alerting and dashboarding in a single package.
+
+Visualization/dashboarding
+--------------------------
+
+Note: visualization and dashboarding are explicitly decoupled
+
+Alerting
+--------
+
+Kapacitor monitors time series from InfluxDB and generates corresponding alerts.
+
+Alerts can be generated on a variety of conditions, such as the following:
+
+- Value above/below threshold
+   - CPU idle too low
+   - Swap utilization too high
+- Standard deviation of a time series exceeded
+   - System load repeatedly jumps to 100 and then falls back to 0
+- Deadman alert when time series not sent
+   - Telegraf on a given system is no longer submitting metrics
+
+InfluxDB 2.0 and Flux
+^^^^^^^^^^^^^^^^^^^^^
+
+As noted above, the advent of InfluxDB 2.0 GA will require that IT rewrite
+monitor checks in Flux from their current form of TICK script. While this
+rewrite will take time and effort, development in TICK script is painful and
+costly so the rewrite will ultimately reduce the barrier to entry for writing
+alerts.
+
+Deployment
+==========
+
+- Services are hosted on Kubernetes
+- Applications are deployed with Helm and kustomize
+
+Appendix A: Definitions
 =======================
 
 Monitoring services
@@ -82,8 +193,8 @@ Prometheus Alertmanager.
 
 Examples of black box alerting include Icinga.
 
-Requirements
-============
+Appendix B: Requirements
+========================
 
 Overall requirements
 --------------------
