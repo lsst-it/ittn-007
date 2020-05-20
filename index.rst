@@ -78,12 +78,11 @@ Metrics storage
 InfluxDB is the core of the monitoring system, and provides a central point for
 metrics storage, retrieval, and querying.
 
-InfluxDB 2
-^^^^^^^^^^
+.. note::
 
-InfluxDB 2.0 is currently in beta, and when released will necessitate a partial
-overhaul of the IT monitoring implementation. InfluxDB 2.0 includes a new query
-language, Flux, and provides both alerting and dashboarding in a single package.
+   InfluxDB 2.0 is currently in beta, and when released will necessitate a partial
+   overhaul of the IT monitoring implementation. InfluxDB 2.0 includes a new query
+   language, Flux, and provides both alerting and dashboarding in a single package.
 
 Visualization/dashboarding
 --------------------------
