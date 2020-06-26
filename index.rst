@@ -44,6 +44,8 @@ and application metrics. Standard system metrics are collected, such as CPU
 use, memory free, disk I/O, and so forth. In additional application metrics can
 be collected from sources such as Kubernetes, Docker, Kafka, et cetera.
 
+See the `profile::core::telegraf <https://github.com/lsst-it/lsst-itconf/blob/master/site/profile/manifests/core/telegraf.pp>` module for implementation details.
+
 Availability metrics
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -58,6 +60,8 @@ Foreman by way of the Foreman Telegraf Configurer (ftc_). Ftc works by querying
 Foreman for a list of all hosts, generates Telegraf configurations to monitor a
 given service (DNS records, ping, etc), and updates the Telegraf deployments
 and configmaps in Kubernetes.
+
+See `k8s-monitoring <https://github.com/lsst-it/k8s-monitoring>` for details.
 
 .. _ftc: https://github.com/lsst-it/ftc
 
@@ -110,6 +114,8 @@ Alerts can be generated on a variety of conditions, such as the following:
    costly so the rewrite will ultimately reduce the barrier to entry for writing
    alerts.
 
+Note that Kapacitor must be directly accessible from InfluxDB. Kapacitor uses `InfluxDB subscriptions <https://docs.influxdata.com/kapacitor/v1.5/administration/subscription-management/>` to push metrics to Kapacitor; without a direct connection Kapacitor cannot operate.
+
 Alert management
 ^^^^^^^^^^^^^^^^
 
@@ -138,30 +144,6 @@ the Influxdata site of the equation the available options in the open source
 space are insufficient. Proprietary options such as VictorOps or PagerDuty
 should be considered to solve this problem.
 
-Deployment
-==========
-
-- Services are hosted on Kubernetes
-- Applications are deployed with Helm and kustomize
-
-Telegraf
---------
-
-Telegraf host based agent
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Standalone Telegraf instances
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-InfluxDB
---------
-
-Kapacitor
----------
-
-Note that Kapacitor must be directly accessible from InfluxDB. Kapacitor uses
-
-InfluxDB subscriptions: https://docs.influxdata.com/kapacitor/v1.5/administration/subscription-management/
 
 Appendix A: Definitions
 =======================
