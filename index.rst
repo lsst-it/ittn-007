@@ -33,7 +33,7 @@ Metrics are collected from a range of sources by Telegraf. Metrics are
 collected from three main sources:
 
 - System and application metrics
-- Availability/liveness metrics
+- Remote availability/liveness metrics
 - Metrics relayed from an external system
 
 Host-based metrics
@@ -49,9 +49,9 @@ See the `profile::core::telegraf <https://github.com/lsst-it/lsst-itconf/blob/ma
 Availability metrics
 ^^^^^^^^^^^^^^^^^^^^
 
-Metrics tracking system availability (e.g. ping, SSH, HTTP) must be run
-independently of hosts being monitored so that alerts can be generated when
-hosts or services become unreachable.  This functionality is provided by
+Metrics tracking external availability (e.g. ping, SSH, HTTP, FTP, Gopher) must
+be run independently of hosts being monitored so that alerts can be generated
+when hosts or services become unreachable.  This functionality is provided by
 standalone Telegraf instances deployed on Kubernetes. Each check runs in a
 separate telegraf deployment.
 
